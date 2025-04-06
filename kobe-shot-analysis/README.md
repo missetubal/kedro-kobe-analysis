@@ -1,101 +1,131 @@
-# kobe-shot-analysis
+💡 Como as ferramentas Streamlit, MLflow, PyCaret e Scikit-Learn auxiliam na construção dos pipelines?
 
-[![Powered by Kedro](https://img.shields.io/badge/powered_by-kedro-ffc900?logo=kedro)](https://kedro.org)
+Este projeto integra ferramentas modernas de MLOps e ciência de dados para facilitar o desenvolvimento, rastreamento, monitoramento e deploy de modelos de Machine Learning. Abaixo estão os papéis principais de cada ferramenta nos pipelines:
 
-## Overview
+✅ Rastreamento de Experimentos – MLflow + PyCaret
+MLflow permite o rastreamento completo dos experimentos com registro automático de:
 
-This is your new Kedro project, which was generated using `kedro 0.19.12`.
+Hiperparâmetros
 
-Take a look at the [Kedro documentation](https://docs.kedro.org) to get started.
+Métricas (ex: Acurácia, F1-Score, Log Loss)
 
-## Rules and guidelines
+Artefatos como modelos treinados, gráficos e arquivos de avaliação
 
-In order to get the best out of the template:
+PyCaret se integra com MLflow e registra automaticamente todos os experimentos executados, facilitando a comparação entre diferentes abordagens de modelagem.
 
-* Don't remove any lines from the `.gitignore` file we provide
-* Make sure your results can be reproduced by following a data engineering convention
-* Don't commit data to your repository
-* Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
+⚙️ Funções de Treinamento – PyCaret + Scikit-Learn
+PyCaret simplifica o ciclo completo de modelagem com automação de:
 
-## How to install dependencies
+Pré-processamento
 
-Declare any dependencies in `requirements.txt` for `pip` installation.
+Seleção e tuning de modelos
 
-To install them, run:
+Validação cruzada
 
-```
-pip install -r requirements.txt
-```
+Scikit-Learn é utilizado para criação de pipelines customizados e aplicação de técnicas avançadas de feature engineering, garantindo flexibilidade e controle total do processo.
 
-## How to run your Kedro pipeline
+📊 Monitoramento da Saúde do Modelo – Streamlit + MLflow
+Streamlit é utilizado para criar dashboards interativos e acompanhar:
 
-You can run your Kedro project with:
+Métricas de performance dos modelos em tempo real
 
-```
-kedro run
-```
+Comparações entre modelos com visualizações claras (ex: Matriz de Confusão)
 
-## How to test your Kedro project
+MLflow complementa com logs históricos e versões de modelos, facilitando a auditoria e manutenção.
 
-Have a look at the file `src/tests/test_run.py` for instructions on how to write your tests. You can run your tests as follows:
+🔄 Atualização de Modelo – MLflow + Pipelines Automáticos
+O pipeline verifica e registra novos modelos com MLflow.
 
-```
-pytest
-```
+Caso um novo modelo tenha performance superior, ele é promovido como o novo modelo de produção.
 
-You can configure the coverage threshold in your project's `pyproject.toml` file under the `[tool.coverage.report]` section.
+Todo o histórico de versões é preservado, permitindo rollback se necessário.
 
+🚀 Provisionamento (Deployment) – Streamlit + MLflow
+Streamlit serve como interface de inferência interativa para usuários e analistas.
 
-## Project dependencies
+MLflow possibilita servir o modelo como API REST (mlflow serve), permitindo integração com outras aplicações e sistemas.
 
-To see and update the dependency requirements for your project use `requirements.txt`. You can install the project requirements with `pip install -r requirements.txt`.
+O uso de modelos registrados garante reprodutibilidade e consistência entre os ambientes de teste e produção.
 
-[Further information about project dependencies](https://docs.kedro.org/en/stable/kedro_project_setup/dependencies.html#project-specific-dependencies)
+📌 1. O modelo é aderente a essa nova base? O que mudou entre uma base e outra? Justifique.
+Sim, o modelo é aderente à nova base, desde que ela mantenha o mesmo esquema de features esperadas pelo pipeline (mesmas colunas, tipos de dados e pré-processamento aplicado).
 
-## How to work with Kedro and notebooks
+✅ O que mudou entre uma base e outra?
+Base de treino (histórica): usada para treinar e validar os modelos, com a variável resposta shot_made_flag disponível.
 
-> Note: Using `kedro jupyter` or `kedro ipython` to run your notebook provides these variables in scope: `context`, 'session', `catalog`, and `pipelines`.
->
-> Jupyter, JupyterLab, and IPython are already included in the project requirements by default, so once you have run `pip install -r requirements.txt` you will not need to take any extra steps before you use them.
+Base de produção (nova): pode ou não conter a variável resposta. Nessa nova base:
 
-### Jupyter
-To use Jupyter notebooks in your Kedro project, you need to install Jupyter:
+Pode haver drift nos dados, ou seja, mudanças nas distribuições das variáveis.
 
-```
-pip install jupyter
-```
+Pode haver novas combinações de variáveis categóricas, ou valores faltantes inesperados.
 
-After installing Jupyter, you can start a local notebook server:
+Pode haver redução de qualidade das features, caso o pipeline não tenha sido aplicado corretamente.
 
-```
-kedro jupyter notebook
-```
+🔎 Para garantir aderência, é importante usar pipelines robustos e versionados, que transformem os dados novos da mesma forma que os dados históricos foram tratados.
 
-### JupyterLab
-To use JupyterLab, you need to install it:
+🩺 2. Como monitorar a saúde do modelo com e sem a variável resposta?
+✅ Com a variável resposta disponível
+Quando a variável shot_made_flag está disponível na base de produção (mesmo que com atraso), é possível:
 
-```
-pip install jupyterlab
-```
+Calcular métricas de performance reais (ex: Acurácia, F1, Log Loss).
 
-You can also start JupyterLab:
+Comparar previsões com os valores reais.
 
-```
-kedro jupyter lab
-```
+Detectar degradação de performance ao longo do tempo (monitoramento contínuo com MLflow e dashboards Streamlit).
 
-### IPython
-And if you want to run an IPython session:
+Atualizar ou reverter modelos se necessário, com base em performance real.
 
-```
-kedro ipython
-```
+Ferramentas como MLflow + Streamlit ajudam a visualizar isso com dashboards operacionais.
 
-### How to ignore notebook output cells in `git`
-To automatically strip out all output cell contents before committing to `git`, you can use tools like [`nbstripout`](https://github.com/kynan/nbstripout). For example, you can add a hook in `.git/config` with `nbstripout --install`. This will run `nbstripout` before anything is committed to `git`.
+⚠️ Sem a variável resposta
+Quando a variável resposta não está disponível no momento da predição:
 
-> *Note:* Your output cells will be retained locally.
+Utilizamos monitoramento indireto:
 
-## Package your Kedro project
+Distribuição das previsões (ex: distribuição dos scores ou classes previstas).
 
-[Further information about building project documentation and packaging your project](https://docs.kedro.org/en/stable/tutorial/package_a_project.html)
+Drift de dados de entrada (ex: Kolmogorov-Smirnov test entre a base de treino e a base nova).
+
+Monitoramento de outliers ou mudanças de perfil no input.
+
+Ferramentas como EvidentlyAI ou código customizado podem calcular métricas de drift, como:
+
+Population Stability Index (PSI)
+
+Jensen-Shannon Distance
+
+Essas técnicas ajudam a antecipar problemas, mesmo sem feedback imediato.
+
+🔄 3. Estratégias de Retreinamento – Reativa e Preditiva
+🧯 Estratégia Reativa
+Consiste em reagir à degradação de performance do modelo:
+
+É aplicada quando a variável resposta se torna disponível.
+
+Monitoramos métricas como F1, Log Loss, Acurácia no tempo.
+
+Retreinamento é disparado quando o desempenho cai abaixo de um limite aceitável.
+
+Pode ser agendado (ex: mensal) ou baseado em gatilhos (ex: F1 < 0.7).
+
+🟠 Prós: Simples de implementar; baseado em feedback real.
+🔵 Contras: A performance pode já estar ruim antes do retreinamento.
+
+🔮 Estratégia Preditiva
+Consiste em prever quando será necessário retreinar, mesmo sem a variável resposta:
+
+Baseada em mudanças nos dados de entrada (Data Drift ou Concept Drift).
+
+Utiliza indicadores como:
+
+Mudança no perfil dos dados
+
+Mudança na distribuição das previsões
+
+Alertas baseados em regras (thresholds)
+
+Pode usar modelos auxiliares para detectar anomalias ou instabilidades.
+
+🟢 Prós: Antecipação de problemas; evita queda brusca de performance.
+🔴 Contras: Pode gerar falsos positivos e retreinamentos desnecessários.
+
