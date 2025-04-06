@@ -1,0 +1,16 @@
+ipython>=8.10
+kedro~=0.19.12
+kedro[pandas.ParquetDataSet]==0.19.12
+notebook
+pyarrow
+pycaret[models,mlops, tuners]
+scikit-optimize>=0.9.0 
+matplotlib
+seaborn 
+streamlit
+kedro-datasets[pandas]
+pandas
+numpy
+scikit-learn
+mlflow<2.13
+jupyterlab
