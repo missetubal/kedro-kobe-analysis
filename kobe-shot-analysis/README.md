@@ -1,6 +1,6 @@
-## Engenharia de Machine Learning [25E1_3]
+# Engenharia de Machine Learning [25E1_3]
 
-#### 3. Como as ferramentas Streamlit, MLflow, PyCaret e Scikit-Learn auxiliam na construção dos pipelines?
+### 3. Como as ferramentas Streamlit, MLflow, PyCaret e Scikit-Learn auxiliam na construção dos pipelines?
  Este projeto integra ferramentas modernas de MLOps e ciência de dados para facilitar o desenvolvimento, rastreamento, monitoramento e deploy de modelos de Machine Learning. Abaixo estão os papéis principais de cada ferramenta nos pipelines:
 - Rastreamento de Experimentos – MLflow + PyCaret
   
@@ -38,12 +38,12 @@ Streamlit serve como interface de inferência interativa para usuários e analis
 MLflow possibilita servir o modelo como API REST (mlflow serve), permitindo integração com outras aplicações e sistemas.
 O uso de modelos registrados garante reprodutibilidade e consistência entre os ambientes de teste e produção.
 
-#### 7a. O modelo é aderente a essa nova base? O que mudou entre uma base e outra? Justifique.
+### 7a. O modelo é aderente a essa nova base? O que mudou entre uma base e outra? Justifique.
 Sim, o modelo é aderente à nova base, desde que ela mantenha o mesmo esquema de features esperadas pelo pipeline (mesmas colunas, tipos de dados e pré-processamento aplicado).
 Se a base de produção nova não conter a variável resposta: pode haver drift nos dados, ou seja, mudanças nas distribuições das variáveis; pode haver novas combinações de variáveis categóricas, ou valores faltantes inesperados; pode haver redução de qualidade das features, caso o pipeline não tenha sido aplicado corretamente.
 Para garantir aderência, é importante usar pipelines robustos e versionados, que transformem os dados novos da mesma forma que os dados históricos foram tratados.
 
-#### 7b. Descreva como podemos monitorar a saúde do modelo no cenário com e sem a disponibilidade da variável resposta para o modelo em operação.
+### 7b. Descreva como podemos monitorar a saúde do modelo no cenário com e sem a disponibilidade da variável resposta para o modelo em operação.
 
 ->	 Com a variável resposta disponível
 
@@ -61,7 +61,7 @@ Utilizamos monitoramento indireto:
 Distribuição das previsões (ex: distribuição dos scores ou classes previstas).
 Monitoramento de outliers ou mudanças de perfil no input.
 
-#### 7c. Descreva as estratégias reativa e preditiva de retreinamento para o modelo em operação.
+### 7c. Descreva as estratégias reativa e preditiva de retreinamento para o modelo em operação.
 ->	Estratégia Reativa
 
 - Consiste em reagir à degradação de performance do modelo:
